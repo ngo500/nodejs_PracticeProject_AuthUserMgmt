@@ -11,37 +11,64 @@ let friends = {
 
 // GET request: Retrieve all friends
 router.get("/",(req,res)=>{
-
-  // Update the code here
-
-  res.send("Yet to be implemented")//This line is to be replaced with actual return value
+  res.send(JSON.stringify(friends, null, 4));                           //send all friends
 });
 
 // GET by specific ID request: Retrieve a single friend with email ID
 router.get("/:email",(req,res)=>{
-  // Update the code here
-  res.send("Yet to be implemented")//This line is to be replaced with actual return value
+  const email = req.params.email;                                       //store specific email
+  res.send(friends[email]);                                             //send user that matches
 });
 
 
 // POST request: Add a new friend
 router.post("/",(req,res)=>{
-  // Update the code here
-  res.send("Yet to be implemented")//This line is to be replaced with actual return value
+  if(req.body.email){                                                   //if the email is valid
+    friends[req.body.email] = {                                         
+        "firstName":req.body.firstName,                                 //add new user
+        "lastName":req.body.lastName,
+        "DOB":req.body.DOB
+    }//add user
+  }//if
+  res.send("Added user " + (req.body.firstName) + "!");                 //send user add confirmation
 });
 
 
 // PUT request: Update the details of a friend with email id
 router.put("/:email", (req, res) => {
-  // Update the code here
-  res.send("Yet to be implemented")//This line is to be replaced with actual return value
+  const email = req.params.email;
+  let friend = friends[email];
+  if(friend){
+    let firstName = req.body.firstName;                                 //get given user input
+    let lastName = req.body.lastName;
+    let DOB = req.body.DOB;
+
+    if(firstName){                                                      //if firstName changed, set new firstName
+        friend["firstName"] = firstName;
+    }//if
+    if(lastName){                                                       //if lastName changed, set new lastName
+        friend["lastName"] = lastName;
+    }//if
+    if(DOB){                                                            //if DOB changed, set new DOB
+        friend["DOB"] = DOB;
+    }//if
+
+    friends[email] = friend;                                            //update user
+    res.send("User " + email + " updated!");                            //send user update confirmation
+  }//if
+  else{
+    res.send("Cannot find user " + email + ", unable to update.");      //send error message
+  }//else
 });
 
 
 // DELETE request: Delete a friend by email id
 router.delete("/:email", (req, res) => {
-  // Update the code here
-  res.send("Yet to be implemented")//This line is to be replaced with actual return value
+  const email = req.params.email;                                       //store given email
+  if(email){                                                            //if email exists
+    delete friends[email];                                              //delete email
+  }//if
+  res.send("Deleted user " + email + "!");                              //send email deletion confirmation
 });
 
 module.exports=router;
